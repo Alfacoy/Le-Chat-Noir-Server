@@ -2,20 +2,22 @@ const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3000;
+
+let users_connected = 0;
 
 io.on("connection", (socket) => {
-  console.log("user connected");
+  users_connected += 1;
 
   socket.on("newMessage", (data) => {
-    console.log(data);
-
     io.sockets.emit("newMessage", data);
   });
+
+  socket.emit("usersOnLine", users_connected);
 });
 
 app.use("/", (req, res) => {
-  res.send("Hola Mundo");
+  res.send("Un simple server :( no me odies.");
 });
 
 server.listen(port, () => {
